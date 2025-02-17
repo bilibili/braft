@@ -604,6 +604,7 @@ struct NodeOptions {
     // Default: false
     bool witness = false;
     // Construct a default instance
+    bool raft_enable_witness_to_leader;
     NodeOptions();
 
     int get_catchup_timeout_ms();

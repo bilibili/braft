@@ -630,6 +630,11 @@ int Replicator::_prepare_entry(int offset, EntryMeta* em, butil::IOBuf *data) {
     } else {
         CHECK(entry->type != ENTRY_TYPE_CONFIGURATION) << "log_index=" << log_index;
     }
+    // 优先使用group级别的配置
+    if (is_witness() && !_options.raft_enable_witness_to_leader) {
+        entry->Release();
+        return 0;
+    } 
     if (!is_witness() || FLAGS_raft_enable_witness_to_leader) {
         em->set_data_len(entry->data.length());
         data->append(entry->data);
@@ -1382,6 +1387,7 @@ int ReplicatorGroup::init(const NodeId& node_id, const ReplicatorGroupOptions& o
     _election_timeout_ms = options.election_timeout_ms;
     _common_options.log_manager = options.log_manager;
     _common_options.ballot_box = options.ballot_box;
+    _common_options.raft_enable_witness_to_leader = options.raft_enable_witness_to_leader;  
     _common_options.node = options.node;
     _common_options.term = 0;
     _common_options.group_id = node_id.group_id;
@@ -1549,9 +1555,15 @@ int ReplicatorGroup::find_the_next_candidate(
         }
         const int64_t next_index = Replicator::get_next_index(iter->id_and_status.id);
         const int consecutive_error_times = Replicator::get_consecutive_error_times(iter->id_and_status.id);
-        if (consecutive_error_times == 0 && next_index > max_index && !iter->peer_id.is_witness()) {
+        if (consecutive_error_times == 0 && next_index > max_index) {
             max_index = next_index;
             if (peer_id) {
+                *peer_id = iter->peer_id;
+            }
+        }
+        // transfer leadership to the non witness peer priority.
+        if (consecutive_error_times == 0  && next_index == max_index) {
+            if (peer_id && peer_id->is_witness()) {
                 *peer_id = iter->peer_id;
             }
         }

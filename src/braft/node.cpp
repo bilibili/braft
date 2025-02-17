@@ -613,6 +613,7 @@ int NodeImpl::init(const NodeOptions& options) {
     rg_options.election_timeout_ms = _options.election_timeout_ms;
     rg_options.log_manager = _log_manager;
     rg_options.ballot_box = _ballot_box;
+    rg_options.raft_enable_witness_to_leader = _options.raft_enable_witness_to_leader;
     rg_options.node = this;
     rg_options.snapshot_throttle = _options.snapshot_throttle
         ? _options.snapshot_throttle->get()

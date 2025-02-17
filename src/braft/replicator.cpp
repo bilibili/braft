@@ -46,6 +46,8 @@ DEFINE_int32(raft_retry_replicate_interval_ms, 1000,
              "Interval of retry to append entries or install snapshot");
 BRPC_VALIDATE_GFLAG(raft_retry_replicate_interval_ms,
                     brpc::PositiveInteger);
+DEFINE_bool(raft_use_conn_pool, true, "use conn pool for raft replicator");
+BRPC_VALIDATE_GFLAG(raft_use_conn_pool, ::brpc::PassValidate);
 
 DECLARE_bool(raft_enable_witness_to_leader);
 DECLARE_int64(raft_append_entry_high_lat_us);
@@ -115,6 +117,9 @@ int Replicator::start(const ReplicatorOptions& options, ReplicatorId *id) {
     Replicator* r = new Replicator();
     brpc::ChannelOptions channel_opt;
     channel_opt.connect_timeout_ms = FLAGS_raft_rpc_channel_connect_timeout_ms;
+    if (FLAGS_raft_use_conn_pool) {
+        channel_opt.connection_type = "pooled";
+    }
     channel_opt.timeout_ms = -1; // We don't need RPC timeout
     if (r->_sending_channel.Init(options.peer_id.addr, &channel_opt) != 0) {
         LOG(ERROR) << "Fail to init sending channel"

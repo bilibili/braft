@@ -613,6 +613,7 @@ int NodeImpl::init(const NodeOptions& options) {
     rg_options.election_timeout_ms = _options.election_timeout_ms;
     rg_options.log_manager = _log_manager;
     rg_options.ballot_box = _ballot_box;
+    rg_options.send_data_to_witness = _options.send_data_to_witness;
     rg_options.node = this;
     rg_options.snapshot_throttle = _options.snapshot_throttle
         ? _options.snapshot_throttle->get()
@@ -1365,6 +1366,11 @@ void NodeImpl::on_error(const Error& e) {
     }
     lck.unlock();
 }
+
+void NodeImpl::pre_send_snapshot(const PeerId& peer_id) {
+    _fsm_caller->on_pre_send_snapshot(peer_id);
+}
+
 
 void NodeImpl::handle_vote_timeout() {
     std::unique_lock<raft_mutex_t> lck(_mutex);

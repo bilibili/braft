@@ -636,7 +636,7 @@ int Replicator::_prepare_entry(int offset, EntryMeta* em, butil::IOBuf *data) {
         CHECK(entry->type != ENTRY_TYPE_CONFIGURATION) << "log_index=" << log_index;
     }
     // 优先使用group级别的配置
-    if (is_witness() && !_options.raft_enable_witness_to_leader) {
+    if (is_witness() && !_options.send_data_to_witness) {
         entry->Release();
         return 0;
     } 
@@ -1392,7 +1392,7 @@ int ReplicatorGroup::init(const NodeId& node_id, const ReplicatorGroupOptions& o
     _election_timeout_ms = options.election_timeout_ms;
     _common_options.log_manager = options.log_manager;
     _common_options.ballot_box = options.ballot_box;
-    _common_options.raft_enable_witness_to_leader = options.raft_enable_witness_to_leader;  
+    _common_options.send_data_to_witness = options.send_data_to_witness;  
     _common_options.node = options.node;
     _common_options.term = 0;
     _common_options.group_id = node_id.group_id;

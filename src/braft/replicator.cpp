@@ -46,7 +46,7 @@ DEFINE_int32(raft_retry_replicate_interval_ms, 1000,
              "Interval of retry to append entries or install snapshot");
 BRPC_VALIDATE_GFLAG(raft_retry_replicate_interval_ms,
                     brpc::PositiveInteger);
-DEFINE_bool(raft_use_conn_pool, true, "use conn pool for raft replicator");
+DEFINE_bool(raft_use_conn_pool, false, "use conn pool for raft replicator");
 BRPC_VALIDATE_GFLAG(raft_use_conn_pool, ::brpc::PassValidate);
 
 DECLARE_bool(raft_enable_witness_to_leader);

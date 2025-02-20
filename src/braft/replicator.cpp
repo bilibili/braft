@@ -635,7 +635,7 @@ int Replicator::_prepare_entry(int offset, EntryMeta* em, butil::IOBuf *data) {
     } else {
         CHECK(entry->type != ENTRY_TYPE_CONFIGURATION) << "log_index=" << log_index;
     }
-    // 优先使用group级别的配置
+    // use group-level configuration preferentially 
     if (is_witness() && !_options.send_data_to_witness) {
         entry->Release();
         return 0;
@@ -800,8 +800,6 @@ void Replicator::_install_snapshot() {
                                             add_one_more_task(true)) {
         return _block(butil::gettimeofday_us(), EBUSY);
     }
-
-    node_impl->pre_send_snapshot(_options.peer_id);
     
     // pre-set replicator state to INSTALLING_SNAPSHOT, so replicator could be
     // blocked if something is wrong, such as throttled for a period of time 

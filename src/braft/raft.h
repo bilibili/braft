@@ -604,6 +604,7 @@ struct NodeOptions {
     // Default: false
     bool witness = false;
     // Construct a default instance
+    bool send_data_to_witness = true;
     NodeOptions();
 
     int get_catchup_timeout_ms();

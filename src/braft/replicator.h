@@ -47,6 +47,7 @@ struct ReplicatorOptions {
     ReplicatorOptions();
     int* dynamic_heartbeat_timeout_ms;
     int* election_timeout_ms;
+    bool send_data_to_witness;
     GroupId group_id;
     PeerId server_id;
     PeerId peer_id;
@@ -267,6 +268,7 @@ struct ReplicatorGroupOptions {
     ReplicatorGroupOptions();
     int heartbeat_timeout_ms;
     int election_timeout_ms;
+    bool send_data_to_witness = true;
     LogManager* log_manager;
     BallotBox* ballot_box;
     NodeImpl* node;

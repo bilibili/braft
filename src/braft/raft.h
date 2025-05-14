@@ -793,7 +793,7 @@ public:
     //      - This node is a leader, and the count of writable nodes in the group
     //        is less than the majority.
     bool readonly();
-
+    int change_witness_config(bool send);
 private:
     NodeImpl* _impl;
 };

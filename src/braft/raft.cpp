@@ -242,6 +242,10 @@ bool Node::readonly() {
     return _impl->readonly();
 }
 
+int Node::change_witness_config(bool send){
+    return _impl->change_witness_config(send);
+}
+
 // ------------- Iterator
 void Iterator::next() {
     if (valid()) {

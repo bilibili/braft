@@ -1597,7 +1597,10 @@ void ReplicatorGroup::list_replicators(
         out->push_back(std::make_pair(iter->first, iter->second.id));
     }
 }
- 
+int ReplicatorGroup::change_witness_config(bool send_data_to_witness){
+    _common_options.send_data_to_witness = send_data_to_witness;
+}
+
 int ReplicatorGroup::change_readonly_config(const PeerId& peer, bool readonly) {
     std::map<PeerId, ReplicatorIdAndStatus>::const_iterator iter = _rmap.find(peer);
     if (iter == _rmap.end()) {

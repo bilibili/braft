@@ -359,7 +359,7 @@ public:
 
     // Change the readonly config for a peer
     int change_readonly_config(const PeerId& peer, bool readonly);
-
+    int change_witness_config(bool send_data_to_witness);
     // Check if a replicator is in readonly
     bool readonly(const PeerId& peer) const;
 

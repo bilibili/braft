@@ -125,7 +125,9 @@ public:
     // Change the readonly config.
     // Return 0 if success, the error code otherwise.
     static int change_readonly_config(ReplicatorId id, bool readonly);
-
+    // Change the witness config.
+    // Return 0 if success, the error code otherwise.
+    static int change_witness_config(ReplicatorId id, bool send);
     // Check if a replicator is readonly
     static bool readonly(ReplicatorId id);
     
@@ -170,7 +172,7 @@ private:
         return _next_index - _flying_append_entries_size;
     }
     int _change_readonly_config(bool readonly);
-
+    int _change_witness_config(bool send);
     static void _on_rpc_returned(
                 ReplicatorId id, brpc::Controller* cntl,
                 AppendEntriesRequest* request, 
@@ -359,7 +361,7 @@ public:
 
     // Change the readonly config for a peer
     int change_readonly_config(const PeerId& peer, bool readonly);
-
+    int change_witness_config(bool send_data_to_witness);
     // Check if a replicator is in readonly
     bool readonly(const PeerId& peer) const;
 

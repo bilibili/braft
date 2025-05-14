@@ -3384,6 +3384,11 @@ bool NodeImpl::readonly() {
     return _node_readonly || _majority_nodes_readonly;
 }
 
+int NodeImpl::change_witness_config(bool send_data_to_witness){
+    _options.send_data_to_witness = send_data_to_witness;
+    _replicator_group.change_witness_config(send_data_to_witness);
+}
+
 int NodeImpl::change_readonly_config(int64_t term, const PeerId& peer_id, bool readonly) {
     BAIDU_SCOPED_LOCK(_mutex);
     if (term != _current_term && _state != STATE_LEADER) {

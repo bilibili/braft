@@ -1234,6 +1234,21 @@ int Replicator::change_readonly_config(ReplicatorId id, bool readonly) {
     return r->_change_readonly_config(readonly);
 }
 
+int Replicator::change_witness_config(ReplicatorId id, bool send){
+    Replicator *r = NULL;
+    bthread_id_t dummy_id = { id };
+    if (bthread_id_lock(dummy_id, (void**)&r) != 0) {
+        return 0;
+    }
+    return r->_change_witness_config(send);
+}
+
+int Replicator::_change_witness_config(bool send){
+    _options.send_data_to_witness = send;
+    CHECK_EQ(0, bthread_id_unlock(_id)) << "Fail to unlock " << _id;
+    return 0;
+}
+
 int Replicator::_change_readonly_config(bool readonly) {
     if ((readonly && _readonly_index != 0) ||
         (!readonly && _readonly_index == 0)) {
@@ -1599,6 +1614,14 @@ void ReplicatorGroup::list_replicators(
 }
 int ReplicatorGroup::change_witness_config(bool send_data_to_witness){
     _common_options.send_data_to_witness = send_data_to_witness;
+    for (std::map<PeerId, ReplicatorIdAndStatus>::const_iterator
+            iter = _rmap.begin();  iter != _rmap.end(); ++iter) {
+      int ret =  Replicator::change_witness_config(iter->second.id, send_data_to_witness);
+      if(ret !=0) {
+        return ret;
+      }
+    }
+    return 0;
 }
 
 int ReplicatorGroup::change_readonly_config(const PeerId& peer, bool readonly) {

@@ -3390,7 +3390,7 @@ bool NodeImpl::readonly() {
 
 int NodeImpl::change_witness_config(bool send_data_to_witness){
     _options.send_data_to_witness = send_data_to_witness;
-    _replicator_group.change_witness_config(send_data_to_witness);
+    return _replicator_group.change_witness_config(send_data_to_witness);
 }
 
 int NodeImpl::change_readonly_config(int64_t term, const PeerId& peer_id, bool readonly) {
